@@ -1,0 +1,39 @@
+tmp
+bin
+.env
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Temporary files
+tmp/
+bin/
+
+# Environment variables
+.env
+
+# Air configuration and log files
+.air.toml
+.air.conf
+.air.log
+
+# Dependency directories (remove the comment if you use Go modules)
+vendor/
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Go workspace file
+go.work
