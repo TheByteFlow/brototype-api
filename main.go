@@ -12,6 +12,7 @@ func setupRoutes(app *fiber.App) {
 	api.Post("/auth", handlers.GetUserAuth)
 	api.Get("/details", handlers.GetUserDetails)
 	api.Get("/reviews", handlers.GetUserReviews)
+	api.Get("/foundations", handlers.GetFoundationReviews)
 }
 func main() {
 	app := fiber.New()

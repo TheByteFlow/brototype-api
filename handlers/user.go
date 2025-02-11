@@ -151,16 +151,45 @@ func authenticateWithBrototype(url string, user User) (*BrototypeUser, error) {
 
 var url string = "https://api.brototype.com/tool/student/api"
 
+type FoundationReview struct {
+	ID              string    `json:"id"`
+	Week            string    `json:"week"`
+	PreferredTime   time.Time `json:"preferredTime"`
+	ReviewStageCode int       `json:"reviewStageCode"`
+	ScheduledOn     time.Time `json:"scheduledOn"`
+	Status          string    `json:"status"`
+	CompletedOn     time.Time `json:"completedOn"`
+	Advisor         string    `json:"advisor"`
+	MeetLink        string    `json:"meetLink"`
+	ReviewType      string    `json:"reviewType"`
+	ReviewBadge     *string   `json:"reviewBadge"`
+	SpecialType     string    `json:"specialType"`
+	ConductedOn     time.Time `json:"conductedOn"`
+	BatchName       string    `json:"batchName"`
+	StudentName     string    `json:"studentName"`
+	Feedback        string    `json:"feedback"`
+}
+
+type FoundationReviewsData struct {
+	Reviews []FoundationReview `json:"reviews"`
+}
+
 func GetUserAuth(c *fiber.Ctx) error {
 	var user User
 	if err := c.BodyParser(&user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
+	if user.Mobile == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "mobile is missing"})
+	} else if user.Password == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "password is missing"})
+	}
+
 	brototypeUser, err := authenticateWithBrototype(url, user)
 	if err != nil {
-		fmt.Printf("failed to send http request")
+		fmt.Println("failed to send http request")
+		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"error": "failed to send req"})
 	}
-	//so what happens here is pretty self explanator the GetUser post request returns the brototype user
 	return c.JSON(brototypeUser)
 }
 
@@ -231,4 +260,37 @@ func GetUserReviews(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "failed to get reviews"})
 	}
 	return c.Status(fiber.StatusOK).JSON(reviewResponse)
+}
+
+func GetFoundationReviews(c *fiber.Ctx) error {
+	tokenWithBearer := c.Get("Authorization")
+	reviewType := c.Query("reviewStageCode")
+	if reviewType == "" {
+		reviewType = "1"
+	}
+	fmt.Println(reviewType)
+	if tokenWithBearer == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "token is empty"})
+	}
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url+"/foundation/reviews?avoidReviewType=4&pageSize=100&reviewStageCode="+reviewType, nil)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "server error occured"})
+	}
+	req.Header.Set("Authorization", tokenWithBearer)
+	foundationResponse, err := client.Do(req)
+	if err != nil {
+		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"error": "failed to fetch data from brototype one"})
+	}
+	defer foundationResponse.Body.Close()
+	fmt.Println(foundationResponse.StatusCode)
+	if foundationResponse.StatusCode != fiber.StatusOK {
+		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"error": "failed to fetch data from brototype"})
+	}
+	var foundationReview FoundationReviewsData
+	if err := json.NewDecoder(foundationResponse.Body).Decode(&foundationReview); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "failed to convert json"})
+	}
+	return c.Status(fiber.StatusOK).JSON(foundationReview)
+
 }
