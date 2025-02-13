@@ -1,8 +1,8 @@
 # Use official Golang image
 FROM golang:1.23
-
+# RUN go get github.com/air-verse/air@latest
 # Install air for live code reloading
-RUN go install github.com/cosmtrek/air@latest
+RUN go install github.com/air-verse/air@latest
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -20,4 +20,4 @@ COPY . .
 EXPOSE 8080
 
 # Set the default command for development using air
-CMD ["air"]
+CMD ["ls"]
