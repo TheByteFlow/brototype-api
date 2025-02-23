@@ -1,26 +1,43 @@
-# API DOCUMENTATION OF BROTOTYPE API
+# 🚀 Brototype API Wrapper
 
-This is a simple application built using Golang-Fiber its like a simple wrapper around existing Brototype API Endpoints so you would be able to access all the data in this api Iam listing all the api end points too. If you are planning to access it from the frontend or creating any data around it. I was planning to create a small wrapper around it inorder to fetch all data and list then in a beautiful manner.
+Welcome to the **Brototype API Wrapper**, a Golang-Fiber-based application designed to provide a structured and easy-to-use interface around the existing Brototype API. This project simplifies accessing data, making it easier for frontend applications or data aggregation tools to interact with Brototype services efficiently.
 
-## AUTHENTICATION
-### ENDPOINT 
-POST http://localhost:8080/api/auth
+## 🌟 Overview
+This API wrapper offers seamless access to authentication, user details, review schedules, and foundational review data from the Brototype ecosystem. It is fully Dockerized for easy deployment and ensures smooth integration with modern applications.
 
-### REQUEST
-Content-Type : application/json
+## 🛠️ Tech Stack
+
+- **Language**: Golang (Fiber framework)
+- **Containerization**: Docker
+- **Authentication**: Token-based authentication
+- **API Testing**: cURL / Postman
+
+## ✨ Features
+
+- **🔐 Authentication** – Secure login with mobile number and password.
+- **📄 User Details** – Fetch comprehensive details from Brototype.
+- **📝 Review Management** – Retrieve review schedules, status, and assigned advisors.
+- **📚 Foundation Reviews** – Access structured data on foundational review stages.
+- **📦 Dockerized Deployment** – Easily deploy using Docker.
+
+## 📌 API Documentation
+
+### 🔑 Authentication
+- **Endpoint:** `POST http://localhost:8080/api/auth`
+- **Request:**
 ```json
 {
   "mobile": "+910000000000",
   "password": "sample123"
 }
 ```
-### RESPONSE
+- **Response:**
 ```json
 {
-   "token":"asdaujdaskdas.sdasdsadasda.sdasdasdas"
+   "token":"your_jwt_token_here"
 }
 ```
-### CURL REQUEST
+- **cURL Command:**
 ```bash
 curl -X POST http://localhost:8080/api/auth \
 -H "Content-Type: application/json" \
@@ -28,143 +45,88 @@ curl -X POST http://localhost:8080/api/auth \
   "mobile": "+910000000000",
   "password": "sample123"
 }'
-
 ```
 
-### NOTE:
-Remember to paste that token to fetch data in subsequent requests.<br/>
- <b>Note that the password and username to be used is the one that you have used in brototype's student portal.</b>
-
-
-
-## DETAILS
-
-### ENDPOINT
-GET http://localhost:8080/api/details
-
-### REQUEST
-Authorization: Bearer \<Token from Previous Step>
-
-### RESPONSE
-The response would have almost all the data's that you have provided to Brototype
-
+### 📋 Fetch User Details
+- **Endpoint:** `GET http://localhost:8080/api/details`
+- **Headers:** `Authorization: Bearer <TOKEN>`
+- **cURL Command:**
 ```bash
 curl -X GET http://localhost:8080/api/details \
--H "Authorization: Bearer <TOKEN>" \
+-H "Authorization: Bearer <TOKEN>"
 ```
 
-
-## REVIEWS
-### ENDPOINT
-GET http://localhost:8080/api/reviews
-
-### REQUEST
-
-
-```
-NO BODY
-```
-### RESPONSE
-```json
-{
-    "reviews":
-    [
-        {
-            "id": "2e2207e0-1cca-4226-b3ac-636770171d4e",
-            "week": "28",
-            "preferredTime": "2025-02-10T00:00:00Z",
-            "reviewStageCode": 0,
-            "ratings": [],
-            "scheduledOn": null,
-            "status": null,
-            "completedOn": null,
-            "advisor": "Cilla Joy",
-            "meetLink": null,
-            "reviewType": "Normal",
-            "reviewBadge": "Second Project Hosting",
-            "specialType": "normal"
-        },
-    ]
-}
-```
-### CURL REQUEST
+### 🔍 Retrieve Reviews
+- **Endpoint:** `GET http://localhost:8080/api/reviews`
+- **cURL Command:**
 ```bash
 curl --location --request GET 'http://localhost:8080/api/reviews' \
---header 'Authorization: Bearer <Token>' \
+--header 'Authorization: Bearer <TOKEN>'
 ```
 
-## FOUNDATIONS
-
-### ENDPOINT
-GET http://localhost:8080/api/foundations?reviewStageCode=value
-### PARAMETERS
-<table>
-<tr>
-<th>Parameter</th>
-<th>value's</th>
-<th>significance</th>
-</tr>
-<tr>
-<td>reviewStageCodeAt</td>
-<td>1</td>
-<td>Upcoming</td>
-</tr>
-<tr>
-<td>reviewStageCodeAt</td>
-<td>2</td>
-<td>Conducted</td>
-</tr>
-<tr>
-<td>reviewStageCodeAt</td>
-<td>3</td>
-<td>Completed</td>
-</tr>
-
-
-</table>
-
-### REQUEST
-```json
-NO BODY
-```
-
-### RESPONSE
-```json
-{
-    "reviews": [
-        {
-            "id": "67d65a58-6f34-4052-908c-092fa3a1a864",
-            "week": "1",
-            "preferredTime": "2025-02-11T00:00:00Z",
-            "reviewStageCode": 3,
-            "scheduledOn": "2025-02-11T05:30:00Z",
-            "status": "passed",
-            "completedOn": "2025-02-11T06:37:29.334731Z",
-            "advisor": "",
-            "meetLink": "",
-            "reviewType": "Foundation",
-            "reviewBadge": null,
-            "specialType": "technical",
-            "conductedOn": "2025-02-11T06:03:53.563Z",
-            "batchName": "FP001",
-            "studentName": "",
-            "feedback": ""
-        },
-    ]
-}
-```
-
-### CURL REQUEST
+### 🏛️ Foundation Reviews
+- **Endpoint:** `GET http://localhost:8080/api/foundations?reviewStageCode=value`
+- **Query Parameters:**
+  - `1` – Upcoming
+  - `2` – Conducted
+  - `3` – Completed
+- **cURL Command:**
 ```bash
 curl --location --request GET 'http://localhost:8080/api/foundations?reviewStageCode=3' \
-
---header 'Authorization: Bearer TOKEN \
-
+--header 'Authorization: Bearer <TOKEN>'
 ```
 
-<b>NOTE:</b>
+## 🛠️ Installation & Setup
 
-The end point for the foundations like this is the new program we can access the data this way.
+### 🔹 Prerequisites
+- Docker installed on your system
+- Golang installed (if running locally)
 
+### 🔹 Run with Docker
+```bash
+git clone https://github.com/yourusername/brototype-api-wrapper.git
+cd brototype-api-wrapper
+docker-compose up -d
+```
 
-### CONTRIBUTORS GUIDE
+### 🔹 Run Locally
+```bash
+git clone https://github.com/yourusername/brototype-api-wrapper.git
+cd brototype-api-wrapper
+go mod tidy
+go run main.go
+```
+
+## 🎯 Contributors Guide
+
+### 🛠 How to Contribute
+1. **Fork the Repository**: Click the fork button on GitHub.
+2. **Clone Your Fork**: 
+   ```bash
+   git clone https://github.com/yourusername/brototype-api-wrapper.git
+   ```
+3. **Create a Branch**:
+   ```bash
+   git checkout -b feature-branch
+   ```
+4. **Make Changes** and **Commit**:
+   ```bash
+   git commit -m "Added new feature"
+   ```
+5. **Push to Your Fork**:
+   ```bash
+   git push origin feature-branch
+   ```
+6. **Submit a Pull Request** on GitHub.
+
+### 📜 Code Style Guidelines
+- Follow Golang best practices.
+- Ensure proper error handling.
+- Maintain clean and readable code.
+
+## 📜 License
+This project is licensed under the MIT License.
+
+---
+
+🚀 **Join the Brototype API Wrapper Community!** Let’s build something amazing together! 💡
